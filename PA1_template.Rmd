@@ -12,53 +12,53 @@ This assignment describes multiple parts data analysis, to include writing a rep
   
 ### Loading and preprocessing the data  
 The code chunk to read and to process the original dataset given:  
-```{r dataset_original}
-act = read.csv("activity.csv", sep=',', stringsAsFactors=FALSE)  #read dataset
+```{r dataset_original, echo=TRUE}
+act = read.csv("activity.csv", sep=",", stringsAsFactors=FALSE)  #read dataset
 act$date <- as.Date(as.character(act$date), "%Y-%m-%d")  #format date variable
 ```
   
 <br>  
   
 ### What is mean total number of steps taken per day?  
-```{r simulate_plot1}
+```{r simulate_plot1, echo=TRUE}
 #Summarise the dataset:
 library(plyr)
 dataf = ddply(act, c("date"), summarize, sum=sum(steps))
 library(ggplot2)
 library(scales)
 g = ggplot(dataf, aes(x=date))
-p1 = g + geom_histogram(aes(weight = sum), position="identity", binwidth=1,
+p1 = g + geom_histogram(aes(weight = sum), position='identity', binwidth=1,
                    colour='black', fill='lightblue')+
     theme_bw()+
     scale_x_date(breaks=seq(min(dataf$date)+0.5, max(dataf$date)+0.5, by=1), 
-                 labels=date_format("%Y-%m-%d"))+
+                 labels=date_format('%Y-%m-%d'))+
     theme(axis.text.x = element_text(size=rel(0.8), angle=90, vjust=0.5))+
     theme(axis.text.y = element_text(size=rel(0.8)))+
     labs(title='Total Number of Steps Taken Per Day')+
     theme(axis.title.x=element_blank())+
-    ylab("Number of Steps")+
+    ylab('Number of Steps')+
     theme(axis.title.y = element_text(size=rel(1.2)))+
-    theme(plot.title = element_text(size=rel(1.5), colour="blue"))
+    theme(plot.title = element_text(size=rel(1.5), colour='blue'))
 ```
 <br>  
 The histogram of the total number of steps taken each day:  
-```{r histogram1}
+```{r histogram1, fig.width=10, echo=TRUE}
 p1 
 ```
 <br>  
 The mean total number of steps taken per day:
-```{r}
+```{r, echo=TRUE}
 mean(dataf$sum, na.rm=TRUE)
 ```
 The median total number of steps taken per day:
-```{r}
+```{r, echo=TRUE}
 median(dataf$sum, na.rm=TRUE)
 ```
   
 <br>  
   
 ### What is mean total number of steps taken per day?
-```{r simulate_plot2}
+```{r simulate_plot2, echo=TRUE}
 #Reformat the dataset:
 actn = na.omit(act)  #remove NA from dataset
 dataf2 = ddply(actn, c("interval"), summarize, stepMEAN=mean(steps))
@@ -68,16 +68,19 @@ p2 = ggplot(dataf2, aes(interval, stepMEAN))+
     theme_bw()+
     labs(title='A Time Series Plot: Average Daily Activity Pattern')+
     ylab('Number of Steps')+
-    xlab('Interval')
+    xlab('Interval')+
+    theme(axis.title.x = element_text(size=rel(1.2)))+
+    theme(axis.title.y = element_text(size=rel(1.2)))+
+    theme(plot.title = element_text(size=rel(1.3), colour='blue'))
 ```
 <br>  
 The time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis):
-```{r linegraph1}
+```{r linegraph1, fig.width=8, echo=TRUE}
 p2
 ```
 <br>  
 The 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps:  
-```{r}
+```{r, echo=TRUE}
 dataf2[which.max(dataf2$stepMEAN),]
 ```
 At the 104th position, interval at 835, with mean 206.2.  
@@ -87,12 +90,12 @@ At the 104th position, interval at 835, with mean 206.2.
 ### Imputing missing values  
   
 The total number of missing values in the dataset (i.e. the total number of rows with NAs):  
-```{r}
+```{r, echo=TRUE}
 colSums(is.na(act))
 ```
 <br>  
 The strategy for filling in all of the missing values in the dataset - to use the mean for that 5-minute interval.  
-```{r dataset_modify1}
+```{r dataset_modify1, echo=TRUE}
 #The average steps for 5-minute interval value:
 m5mi = (mean(dataf$sum, na.rm=TRUE)) /
          ((colSums(is.na(act))[[1]])/(colSums(is.na(dataf))[[2]]))
@@ -102,37 +105,37 @@ act2 = act  #make a copy of the original dataset
 act2$steps[is.na(act2$steps)] = m5mi  #replace NA
 ```
 
-```{r simulate_plot3}
+```{r simulate_plot3, echo=TRUE}
 # Make a histogram of the total number of steps taken each day:
 dataf3 = ddply(act2, c("date"), summarize, sum=sum(steps))
 
 p3 = ggplot(dataf3, aes(x=date))+
-    geom_histogram(aes(weight = sum), position="identity", binwidth=1,
+    geom_histogram(aes(weight = sum), position='identity', binwidth=1,
                    colour='black', fill='lightblue')+
     theme_bw()+
     scale_x_date(breaks=seq(min(dataf3$date)+0.5, max(dataf3$date)+0.5, by=1), 
-                 labels=date_format("%Y-%m-%d"))+
+                 labels=date_format('%Y-%m-%d'))+
     theme(axis.text.x = element_text(size=rel(0.8), angle=90, vjust=0.5))+
     theme(axis.text.y = element_text(size=rel(0.8)))+
     labs(title='Total Number of Steps Taken Per Day (revised)')+
     theme(axis.title.x=element_blank())+
-    ylab("Number of Steps")+
+    ylab('Number of Steps')+
     theme(axis.title.y = element_text(size=rel(1.2)))+
-    theme(plot.title = element_text(size=rel(1.5), colour="blue"))
+    theme(plot.title = element_text(size=rel(1.5), colour='blue'))
 ```
 <br>  
 The histogram of the total number of steps taken each day for the newly created dataset:
-```{r histogram2}
+```{r histogram2, fig.width=10, echo=TRUE}
 p3
 ```
 <br>  
 The mean total number of steps taken per day:  
-```{r}
+```{r, echo=TRUE}
 mean(dataf3$sum, na.rm=TRUE)
 ```
   
 The median total number of steps taken per day:
-```{r}
+```{r, echo=TRUE}
 median(dataf3$sum, na.rm=TRUE)
 ```
 <br>  
@@ -146,7 +149,7 @@ Since the mean values used to impute the missing data on the estimates of the to
   
 ### Are there differences in activity patterns between weekdays and weekends?  
 Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.  
-```{r dataset_modify2}
+```{r dataset_modify2, echo=TRUE}
 #make a copy of the dataset with the missing data filled in
 act3= act2
 #add day column
@@ -158,7 +161,7 @@ act3$week[act3$week==0 | act3$week==6] = "weekend"
 act3$week = as.factor(act3$week)
 ```
   
-```{r simulate_plot4}
+```{r simulate_plot4, echo=TRUE}
 #Summarise the dataset:
 dataf4 = ddply(act3, c("week","interval"), summarize, stepMEAN=mean(steps))
 p4 = ggplot(dataf4, aes(interval, stepMEAN))+
@@ -170,18 +173,18 @@ p4 = ggplot(dataf4, aes(interval, stepMEAN))+
     xlab('Interval')+
     theme(axis.title.x = element_text(size=rel(1.2)))+
     theme(axis.title.y = element_text(size=rel(1.2)))+
-    theme(plot.title = element_text(size=rel(1.2), colour='blue'))+
+    theme(plot.title = element_text(size=rel(1.3), colour='blue'))+
     theme(strip.background = element_rect(fill='pink'))
 ```
 <br>  
 The time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis):
-```{r linegraph2}
+```{r linegraph2, fig.width=8, echo=TRUE}
 p4
 ```
 <br>  
   
 >  
-The plots indicate a gradual increase in activity patterns, about 2 hours earlier during weekday as compare to the weekend, but a lower activity pattern depicted over  daytime and early evening periods.  
+The plots indicate a gradual increase in activity patterns, about 2 hours earlier in the morning during weekday as compare to the weekend, however a lower activity pattern depicted over the daytime and early evening periods.  
   
 <br>  
 <br>  

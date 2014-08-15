@@ -14,7 +14,7 @@ This assignment describes multiple parts data analysis, to include writing a rep
 The code chunk to read and to process the original dataset given:  
 
 ```r
-act = read.csv("activity.csv", sep=',', stringsAsFactors=FALSE)  #read dataset
+act = read.csv("activity.csv", sep=",", stringsAsFactors=FALSE)  #read dataset
 act$date <- as.Date(as.character(act$date), "%Y-%m-%d")  #format date variable
 ```
   
@@ -27,28 +27,20 @@ act$date <- as.Date(as.character(act$date), "%Y-%m-%d")  #format date variable
 library(plyr)
 dataf = ddply(act, c("date"), summarize, sum=sum(steps))
 library(ggplot2)
-```
-
-```
-## Find out what's changed in ggplot2 with
-## news(Version == "1.0.0", package = "ggplot2")
-```
-
-```r
 library(scales)
 g = ggplot(dataf, aes(x=date))
-p1 = g + geom_histogram(aes(weight = sum), position="identity", binwidth=1,
+p1 = g + geom_histogram(aes(weight = sum), position='identity', binwidth=1,
                    colour='black', fill='lightblue')+
     theme_bw()+
     scale_x_date(breaks=seq(min(dataf$date)+0.5, max(dataf$date)+0.5, by=1), 
-                 labels=date_format("%Y-%m-%d"))+
+                 labels=date_format('%Y-%m-%d'))+
     theme(axis.text.x = element_text(size=rel(0.8), angle=90, vjust=0.5))+
     theme(axis.text.y = element_text(size=rel(0.8)))+
     labs(title='Total Number of Steps Taken Per Day')+
     theme(axis.title.x=element_blank())+
-    ylab("Number of Steps")+
+    ylab('Number of Steps')+
     theme(axis.title.y = element_text(size=rel(1.2)))+
-    theme(plot.title = element_text(size=rel(1.5), colour="blue"))
+    theme(plot.title = element_text(size=rel(1.5), colour='blue'))
 ```
 <br>  
 The histogram of the total number of steps taken each day:  
@@ -92,7 +84,10 @@ p2 = ggplot(dataf2, aes(interval, stepMEAN))+
     theme_bw()+
     labs(title='A Time Series Plot: Average Daily Activity Pattern')+
     ylab('Number of Steps')+
-    xlab('Interval')
+    xlab('Interval')+
+    theme(axis.title.x = element_text(size=rel(1.2)))+
+    theme(axis.title.y = element_text(size=rel(1.2)))+
+    theme(plot.title = element_text(size=rel(1.3), colour='blue'))
 ```
 <br>  
 The time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis):
@@ -148,18 +143,18 @@ act2$steps[is.na(act2$steps)] = m5mi  #replace NA
 dataf3 = ddply(act2, c("date"), summarize, sum=sum(steps))
 
 p3 = ggplot(dataf3, aes(x=date))+
-    geom_histogram(aes(weight = sum), position="identity", binwidth=1,
+    geom_histogram(aes(weight = sum), position='identity', binwidth=1,
                    colour='black', fill='lightblue')+
     theme_bw()+
     scale_x_date(breaks=seq(min(dataf3$date)+0.5, max(dataf3$date)+0.5, by=1), 
-                 labels=date_format("%Y-%m-%d"))+
+                 labels=date_format('%Y-%m-%d'))+
     theme(axis.text.x = element_text(size=rel(0.8), angle=90, vjust=0.5))+
     theme(axis.text.y = element_text(size=rel(0.8)))+
     labs(title='Total Number of Steps Taken Per Day (revised)')+
     theme(axis.title.x=element_blank())+
-    ylab("Number of Steps")+
+    ylab('Number of Steps')+
     theme(axis.title.y = element_text(size=rel(1.2)))+
-    theme(plot.title = element_text(size=rel(1.5), colour="blue"))
+    theme(plot.title = element_text(size=rel(1.5), colour='blue'))
 ```
 <br>  
 The histogram of the total number of steps taken each day for the newly created dataset:
@@ -226,7 +221,7 @@ p4 = ggplot(dataf4, aes(interval, stepMEAN))+
     xlab('Interval')+
     theme(axis.title.x = element_text(size=rel(1.2)))+
     theme(axis.title.y = element_text(size=rel(1.2)))+
-    theme(plot.title = element_text(size=rel(1.2), colour='blue'))+
+    theme(plot.title = element_text(size=rel(1.3), colour='blue'))+
     theme(strip.background = element_rect(fill='pink'))
 ```
 <br>  
@@ -240,7 +235,7 @@ p4
 <br>  
   
 >  
-The plots indicate a gradual increase in activity patterns, about 2 hours earlier during weekday as compare to the weekend, but a lower activity pattern depicted over  daytime and early evening periods.  
+The plots indicate a gradual increase in activity patterns, about 2 hours earlier in the morning during weekday as compare to the weekend, however a lower activity pattern depicted over the daytime and early evening periods.  
   
 <br>  
 <br>  
